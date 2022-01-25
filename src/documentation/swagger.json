@@ -1,0 +1,128 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "(super) Simple available flights API",
+    "description": "obtains information about available flights from two sources, merges the response from both providers and makes sure that there is no duplicate information.",
+    "license": {
+      "name": "MIT",
+      "url": "https://opensource.org/licenses/MIT"
+    }
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000/api",
+      "description": "Development server"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Flights",
+      "description": "API for available flights"
+    }
+  ],
+  "consumes": ["application/json"],
+  "produces": ["application/json"],
+  "paths": {
+    "/flights": {
+      "get": {
+        "tags": ["Flights"],
+        "summary": "Get all available flights from providers",
+        "responses": {
+          "200": {
+            "description": "Flights succesfully retrieved",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FlightResponse"
+                }
+              }
+            }
+          },
+          "408": {
+            "description": "Request timeout",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Flights": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "slices": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Slice"
+            }
+          },
+          "price": {
+            "type": "number"
+          }
+        }
+      },
+      "Slice": {
+        "type": "object",
+        "properties": {
+          "origin_name": {
+            "type": "string"
+          },
+          "destination_name": {
+            "type": "string"
+          },
+          "departure_date_time_utc": {
+            "type": "string"
+          },
+          "arrival_date_time_utc": {
+            "type": "string"
+          },
+          "flight_number": {
+            "type": "string"
+          },
+          "duration": {
+            "type": "number"
+          }
+        }
+      },
+      "FlightResponse": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string"
+          },
+          "status": {
+            "type": "number"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Flights"
+            }
+          }
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string"
+          },
+          "status": {
+            "type": "number"
+          }
+        }
+      }
+    }
+  }
+}
